@@ -1,74 +1,159 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const TrackerSheet());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class TrackerSheet extends StatelessWidget {
+  const TrackerSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          backgroundColor: Colors.blueAccent,
-          elevation: 5,
-        ),
-      ),
-      home: const ListScreen(),
+      home: const HomeScreen(),
     );
   }
 }
 
-class ListScreen extends StatelessWidget {
-  const ListScreen({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Stylish ListView")),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              color: Colors.primaries[index % Colors.primaries.length],
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16),
-                title: Text(
-                  "Item ${index + 1}",
-                  style: const TextStyle(
-                    fontSize: 18,
+      backgroundColor: const Color.fromARGB(255, 205, 184, 141),
+      appBar: AppBar(
+        title: const Center(
+          child: Text(
+            'Text Style',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 43, 80, 155),
+              fontFamily: 'DMSans',
+            ),
+          ),
+        ),
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 15),
+                child: const Text(
+                  'Hello World!',
+                  style: TextStyle(
+                    fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                subtitle: const Text(
-                  "This is a subtitle",
-                  style: TextStyle(color: Colors.white70),
-                ),
-                leading: CircleAvatar(
-                  backgroundColor: Colors.white.withOpacity(0.7),
-                  child: Text(
-                    "${index + 1}",
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    color: Color.fromARGB(255, 43, 80, 155),
+                    fontFamily: 'DMSans',
                   ),
                 ),
               ),
             ),
-          );
-        },
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: const Text(
+                'Turzo - BOLD',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: const Text(
+                'Turzo - Italic',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: const Text(
+                'Turzo - Underlined',
+                style: TextStyle(
+                  fontSize: 22,
+                  decoration: TextDecoration.underline,
+                  color: Colors.green,
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: Text(
+                'Turzo - Shadow',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: const Color.fromARGB(255, 245, 244, 242),
+                  shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      offset: Offset(3, 3),
+                      blurRadius: 3,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: Text(
+                'Turzo Samanta - Spacing',
+                style: TextStyle(
+                  fontSize: 18,
+                  letterSpacing: 6.0,
+                  wordSpacing: 1.0,
+                  color: const Color.fromARGB(255, 151, 147, 153),
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text(
+                    'STUDENT ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 80, 149, 206),
+                    ),
+                  ),
+                  Text(
+                    'ID ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.normal,
+                      color: Color.fromARGB(255, 206, 128, 123),
+                    ),
+                  ),
+                  Text(
+                    'DEPARTMENT',
+                    style: TextStyle(
+                      fontSize: 20,
+                      decoration: TextDecoration.underline,
+                      color: Color.fromARGB(255, 117, 212, 121),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
