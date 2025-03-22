@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const Test());
+  runApp(const MyApp());
 }
 
-class Test extends StatelessWidget {
-  const Test({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,104 +14,61 @@ class Test extends StatelessWidget {
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           centerTitle: true,
-          backgroundColor: Color.fromARGB(255, 76, 172, 175),
+          backgroundColor: Colors.blueAccent,
           elevation: 5,
         ),
       ),
-      home: const TestScreen(),
+      home: const ListScreen(),
     );
   }
 }
 
-class TestScreen extends StatefulWidget {
-  const TestScreen({super.key});
-
-  @override
-  _TestScreenState createState() => _TestScreenState();
-}
-
-class _TestScreenState extends State<TestScreen> {
-  String displayText = "Press the Button";
-
-  void updateText() {
-    setState(() {
-      displayText = "Button Pressed";
-    });
-  }
+class ListScreen extends StatelessWidget {
+  const ListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Button App",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 59, 147, 255),
-              Color.fromARGB(255, 30, 86, 174),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  displayText,
+      appBar: AppBar(title: const Text("Stylish ListView")),
+      body: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              color: Colors.primaries[index % Colors.primaries.length],
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(16),
+                title: Text(
+                  "Item ${index + 1}",
                   style: const TextStyle(
-                    fontSize: 28,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    fontFamily: 'DMSans',
                   ),
                 ),
-                const SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: updateText,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(
-                      255,
-                      211,
-                      103,
-                      70,
-                    ), // Corrected here
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40,
-                      vertical: 15,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    elevation: 10,
-                  ),
-                  child: const Text(
-                    "Press here",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                subtitle: const Text(
+                  "This is a subtitle",
+                  style: TextStyle(color: Colors.white70),
+                ),
+                leading: CircleAvatar(
+                  backgroundColor: Colors.white.withOpacity(0.7),
+                  child: Text(
+                    "${index + 1}",
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
