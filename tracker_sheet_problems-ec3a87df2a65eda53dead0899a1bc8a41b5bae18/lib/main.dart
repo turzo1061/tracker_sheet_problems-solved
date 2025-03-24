@@ -1,100 +1,96 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const NavigationApp());
+  runApp(MyApp());
 }
 
-class NavigationApp extends StatelessWidget {
-  const NavigationApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        // Remove the headline6 and primary from ThemeData
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          backgroundColor: Colors.blueAccent,
-          elevation: 8,
-        ),
-      ),
-      home: const FirstScreen(),
-    );
+    return MaterialApp(home: LoginScreen());
   }
 }
 
-class FirstScreen extends StatelessWidget {
-  const FirstScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  String? _errorMessage;
+
+  void _validateForm() {
+    if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _errorMessage = null;
+      });
+
+      print("Form is valid!");
+    } else {
+      setState(() {
+        _errorMessage = "Please fill out all fields correctly.";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('First Screen')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SecondScreen()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor:
-                  Colors.blueAccent, // Correctly use backgroundColor
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+      appBar: AppBar(title: Text("Login")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Username Field
+              TextFormField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your username';
+                  }
+                  return null;
+                },
               ),
-              elevation: 5,
-            ),
-            child: const Text(
-              'Go to Second Screen',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+              SizedBox(height: 16),
 
-class SecondScreen extends StatelessWidget {
-  const SecondScreen({super.key});
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Second Screen')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange, // Correctly use backgroundColor
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              elevation: 5,
-            ),
-            child: const Text(
-              'Back to First Screen',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+              if (_errorMessage != null)
+                Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
+                ),
+
+              ElevatedButton(onPressed: _validateForm, child: Text('Login')),
+            ],
           ),
         ),
       ),
