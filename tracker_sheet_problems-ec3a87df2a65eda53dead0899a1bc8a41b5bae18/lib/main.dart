@@ -5,204 +5,160 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      title: 'Custom Card App',
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: HomeScreen(),
     );
   }
 }
 
 class HomeScreen extends StatelessWidget {
+  HomeScreen({super.key});
+
+  final List<Map<String, String>> items = [
+    {
+      'image':
+          'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c3BvcnRzfGVufDB8fDB8fHww',
+      'title': 'Football',
+      'subtitle': 'Footaball is best',
+      'description': 'Football Seasson is Coming',
+    },
+    {
+      'image':
+          'https://plus.unsplash.com/premium_photo-1684820878202-52781d8e0ea9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8c3BvcnRzfGVufDB8fDB8fHww',
+      'title': 'Cycle Race',
+      'subtitle': 'Speed will blow your mind',
+      'description': 'It is hard.',
+    },
+    {
+      'image':
+          'https://plus.unsplash.com/premium_photo-1685366454581-796f5fc832c6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHNwb3J0c3xlbnwwfHwwfHx8MA%3D%3D',
+      'title': 'Basketball',
+      'subtitle': 'Perfect for sunny weather',
+      'description': 'This is the Basketball',
+    },
+    {
+      'image':
+          'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNwb3J0c3xlbnwwfHwwfHx8MA%3D%3D',
+      'title': 'Swimming',
+      'subtitle': 'Good for  Health',
+      'description': 'This is the description for Swimming',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Navigation Drawer"),
+        title: Text('Sports List'),
         centerTitle: true,
-        elevation: 10,
-        backgroundColor: Colors.purpleAccent,
+        backgroundColor: Colors.blue[300],
       ),
-      drawer: Drawer(
-        child: Container(
-          color: Colors.deepPurple[50],
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                decoration: BoxDecoration(color: Colors.deepPurple),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundImage: AssetImage(
-                        'assets/profile.jpg',
-                      ), // Replace with your image
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Welcome Back!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+      body: ListView.builder(
+        padding: EdgeInsets.all(16),
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return CustomCard(
+            image: items[index]['image']!,
+            title: items[index]['title']!,
+            subtitle: items[index]['subtitle']!,
+            description: items[index]['description']!,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class CustomCard extends StatefulWidget {
+  final String image;
+  final String title;
+  final String subtitle;
+  final String description;
+
+  CustomCard({
+    required this.image,
+    required this.title,
+    required this.subtitle,
+    required this.description,
+  });
+
+  @override
+  _CustomCardState createState() => _CustomCardState();
+}
+
+class _CustomCardState extends State<CustomCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: () {
+          // Add action on tap
+        },
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 200),
+          margin: EdgeInsets.only(bottom: 16),
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(8),
+            boxShadow:
+                _isHovered
+                    ? [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
                       ),
-                    ),
-                    Text(
-                      'User',
-                      style: TextStyle(color: Colors.white70, fontSize: 16),
-                    ),
-                  ],
+                    ]
+                    : [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  widget.image,
+                  height: 150,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
               ),
-              _drawerItem(context, 'Home', HomeScreen()),
-              _drawerItem(context, 'Screen 1', Screen1()),
-              _drawerItem(context, 'Screen 2', Screen2()),
-              _drawerItem(context, 'Screen 3', Screen3()),
+              SizedBox(height: 16),
+              Text(
+                widget.title,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                widget.subtitle,
+                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+              ),
+              SizedBox(height: 8),
+              Text(
+                widget.description,
+                style: TextStyle(fontSize: 14, color: Colors.grey[800]),
+              ),
             ],
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Home Screen',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
-
-  ListTile _drawerItem(BuildContext context, String title, Widget screen) {
-    return ListTile(
-      title: Text(
-        title,
-        style: TextStyle(color: Colors.deepPurple, fontSize: 18),
-      ),
-      onTap: () {
-        Navigator.pop(context);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => screen),
-        );
-      },
-    );
-  }
-}
-
-class Screen1 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return _buildScreen(context, 'Screen 1');
-  }
-}
-
-class Screen2 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return _buildScreen(context, 'Screen 2');
-  }
-}
-
-class Screen3 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return _buildScreen(context, 'Screen 3');
-  }
-}
-
-Widget _buildScreen(BuildContext context, String screenTitle) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text(screenTitle),
-      centerTitle: true,
-      backgroundColor: Colors.purpleAccent,
-      elevation: 10,
-    ),
-    drawer: Drawer(
-      child: Container(
-        color: Colors.deepPurple[50],
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(color: Colors.deepPurple),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage(
-                      'assets/profile.jpg',
-                    ), // Replace with your image
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Welcome Back!',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'User',
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-            _drawerItem(context, 'Home', HomeScreen()),
-            _drawerItem(context, 'Screen 1', Screen1()),
-            _drawerItem(context, 'Screen 2', Screen2()),
-            _drawerItem(context, 'Screen 3', Screen3()),
-          ],
-        ),
-      ),
-    ),
-    body: SingleChildScrollView(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            '$screenTitle Content',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-ListTile _drawerItem(BuildContext context, String title, Widget screen) {
-  return ListTile(
-    title: Text(
-      title,
-      style: TextStyle(color: Colors.deepPurple, fontSize: 18),
-    ),
-    onTap: () {
-      Navigator.pop(context);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => screen),
-      );
-    },
-  );
 }
