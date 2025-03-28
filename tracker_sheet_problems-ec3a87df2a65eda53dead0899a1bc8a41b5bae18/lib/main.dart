@@ -1,71 +1,51 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Styled Container App',
-      theme: ThemeData(primarySwatch: Colors.purple),
-      home: const HomeScreen(),
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: CustomAppBar(),
+        body: Center(child: Text("Hello, Flutter!")),
+      ),
     );
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Styled Container Example',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
-      ),
-      backgroundColor: Colors.black87,
-      body: Center(
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(40, 60, 40, 60),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Colors.purpleAccent, Colors.deepPurple],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.purple.withOpacity(0.5),
-                blurRadius: 15,
-                offset: const Offset(6, 6),
-              ),
-            ],
+    return AppBar(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.network(
+            'https://plus.unsplash.com/premium_photo-1742945845688-d2e666a3b92a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8',
+            height: 40,
           ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 40),
-            child: Text(
-              'Hello, Flutter!',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: 1.5,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
+          SizedBox(width: 10),
+          Text('My App'),
+        ],
       ),
+      centerTitle: true,
+      actions: [
+        IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {},
+        ),
+        IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {},
+        ),
+      ],
     );
   }
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
