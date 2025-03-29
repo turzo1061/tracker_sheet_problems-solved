@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,103 +9,138 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Swipe List',
+      debugShowCheckedModeBanner: false,
+      title: 'Date & Time Picker',
       theme: ThemeData(
-        fontFamily: 'Arial',
-        brightness: Brightness.light,
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple),
+        primarySwatch: Colors.deepPurple,
       ),
-      home: SwipeListScreen(),
+      home: HomeScreen(),
     );
   }
 }
 
-class SwipeListScreen extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  _SwipeListScreenState createState() => _SwipeListScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _SwipeListScreenState extends State<SwipeListScreen> {
-  List<String> items = List.generate(10, (index) => "Item ${index + 1}");
-  List<Color> colors = [
-    Colors.purpleAccent,
-    Colors.blueAccent,
-    Colors.teal,
-    Colors.orangeAccent,
-    Colors.redAccent,
-    Colors.green,
-    Colors.pinkAccent,
-    Colors.amber,
-    Colors.indigoAccent,
-    Colors.cyan,
-  ];
+class _HomeScreenState extends State<HomeScreen> {
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
+
+  Future<void> _pickDate() async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null) {
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+    }
+  }
+
+  Future<void> _pickTime() async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (pickedTime != null) {
+      setState(() {
+        _selectedTime = pickedTime;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Swipe List', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        title: Text(
+          'Date & Time Picker',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
+        centerTitle: true,
         backgroundColor: Colors.deepPurple,
-        elevation: 5,
+        elevation: 8,
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.deepPurple, Colors.blueAccent],
+            colors: [Colors.deepPurple, Colors.purpleAccent],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
-        child: ListView.builder(
-          padding: EdgeInsets.symmetric(vertical: 10),
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            return Dismissible(
-              key: Key(items[index]),
-              background: Container(
-                decoration: BoxDecoration(
-                  color: Colors.redAccent,
-                  borderRadius: BorderRadius.circular(15),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildInfoCard(
+                  title: "Selected Date",
+                  value: _selectedDate == null
+                      ? "No Date Selected"
+                      : "${_selectedDate!.day}-${_selectedDate!.month}-${_selectedDate!.year}",
+                  icon: Icons.calendar_today,
+                  color: Colors.amber,
                 ),
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(left: 20),
-                child: Icon(Icons.delete, color: Colors.white, size: 30),
-              ),
-              secondaryBackground: Container(
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                  borderRadius: BorderRadius.circular(15),
+                SizedBox(height: 20),
+                _buildButton("Pick a Date", Icons.date_range, _pickDate),
+                SizedBox(height: 40),
+                _buildInfoCard(
+                  title: "Selected Time",
+                  value: _selectedTime == null
+                      ? "No Time Selected"
+                      : _selectedTime!.format(context),
+                  icon: Icons.access_time,
+                  color: Colors.cyan,
                 ),
-                alignment: Alignment.centerRight,
-                padding: EdgeInsets.only(right: 20),
-                child: Icon(Icons.edit, color: Colors.white, size: 30),
-              ),
-              onDismissed: (direction) {
-                if (direction == DismissDirection.startToEnd) {
-                  setState(() {
-                    items.removeAt(index);
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Deleted")));
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Edit option tapped")));
-                }
-              },
-              child: Card(
-                elevation: 5,
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                color: colors[index % colors.length],
-                child: ListTile(
-                  title: Text(
-                    items[index],
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                  tileColor: Colors.transparent,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                ),
-              ),
-            );
-          },
+                SizedBox(height: 20),
+                _buildButton("Pick a Time", Icons.timer, _pickTime),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButton(String text, IconData icon, VoidCallback onPressed) {
+    return ElevatedButton.icon(
+      icon: Icon(icon, size: 24),
+      label: Text(
+        text,
+        style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 5,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.deepPurple,
+      ),
+      onPressed: onPressed,
+    );
+  }
+
+  Widget _buildInfoCard({required String title, required String value, required IconData icon, required Color color}) {
+    return Card(
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: color,
+      child: ListTile(
+        leading: Icon(icon, color: Colors.white, size: 28),
+        title: Text(
+          title,
+          style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+        ),
+        subtitle: Text(
+          value,
+          style: GoogleFonts.poppins(fontSize: 16, color: Colors.white70),
         ),
       ),
     );
