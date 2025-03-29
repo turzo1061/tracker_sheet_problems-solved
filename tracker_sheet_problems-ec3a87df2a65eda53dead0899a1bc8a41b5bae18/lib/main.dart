@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'dart:math';
 
 void main() {
   runApp(MyApp());
@@ -10,137 +10,105 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Date & Time Picker',
+      title: 'Interactive Animated Box',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        brightness: Brightness.dark,
+        primarySwatch: Colors.purple,
       ),
-      home: HomeScreen(),
+      home: AnimatedContainerScreen(),
     );
   }
 }
 
-class HomeScreen extends StatefulWidget {
+class AnimatedContainerScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _AnimatedContainerScreenState createState() =>
+      _AnimatedContainerScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  DateTime? _selectedDate;
-  TimeOfDay? _selectedTime;
+class _AnimatedContainerScreenState extends State<AnimatedContainerScreen> {
+  double _width = 120;
+  double _height = 120;
+  Color _color = Colors.deepPurpleAccent;
+  double _borderRadius = 20;
 
-  Future<void> _pickDate() async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    if (pickedDate != null) {
-      setState(() {
-        _selectedDate = pickedDate;
-      });
-    }
-  }
+  void _changeContainer() {
+    setState(() {
+      final random = Random();
 
-  Future<void> _pickTime() async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (pickedTime != null) {
-      setState(() {
-        _selectedTime = pickedTime;
-      });
-    }
+      _width = random.nextDouble() * 200 + 120; // Range: 120-320
+      _height = random.nextDouble() * 200 + 120;
+      _color = Color.fromRGBO(
+        random.nextInt(256),
+        random.nextInt(256),
+        random.nextInt(256),
+        1,
+      );
+      _borderRadius = random.nextDouble() * 100; // Random border radius
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black87,
       appBar: AppBar(
         title: Text(
-          'Date & Time Picker',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 22),
+          'Interactive Animated Box',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple,
-        elevation: 8,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.deepPurple, Colors.purpleAccent],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildInfoCard(
-                  title: "Selected Date",
-                  value: _selectedDate == null
-                      ? "No Date Selected"
-                      : "${_selectedDate!.day}-${_selectedDate!.month}-${_selectedDate!.year}",
-                  icon: Icons.calendar_today,
-                  color: Colors.amber,
-                ),
-                SizedBox(height: 20),
-                _buildButton("Pick a Date", Icons.date_range, _pickDate),
-                SizedBox(height: 40),
-                _buildInfoCard(
-                  title: "Selected Time",
-                  value: _selectedTime == null
-                      ? "No Time Selected"
-                      : _selectedTime!.format(context),
-                  icon: Icons.access_time,
-                  color: Colors.cyan,
-                ),
-                SizedBox(height: 20),
-                _buildButton("Pick a Time", Icons.timer, _pickTime),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildButton(String text, IconData icon, VoidCallback onPressed) {
-    return ElevatedButton.icon(
-      icon: Icon(icon, size: 24),
-      label: Text(
-        text,
-        style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 5,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.deepPurple,
+        backgroundColor: Colors.deepPurple,
       ),
-      onPressed: onPressed,
-    );
-  }
-
-  Widget _buildInfoCard({required String title, required String value, required IconData icon, required Color color}) {
-    return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: color,
-      child: ListTile(
-        leading: Icon(icon, color: Colors.white, size: 28),
-        title: Text(
-          title,
-          style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
-        ),
-        subtitle: Text(
-          value,
-          style: GoogleFonts.poppins(fontSize: 16, color: Colors.white70),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedContainer(
+              duration: Duration(milliseconds: 600),
+              curve: Curves.easeInOutCubic,
+              width: _width,
+              height: _height,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [_color, Colors.white.withOpacity(0.4)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: _color.withOpacity(0.6),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                    offset: Offset(5, 10),
+                  )
+                ],
+                borderRadius: BorderRadius.circular(_borderRadius),
+              ),
+            ),
+            SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: _changeContainer,
+              child: Text(
+                'Transform',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                backgroundColor: Colors.purpleAccent,
+                foregroundColor: Colors.white,
+                elevation: 10,
+                shadowColor: Colors.purple,
+              ),
+            ),
+          ],
         ),
       ),
     );
